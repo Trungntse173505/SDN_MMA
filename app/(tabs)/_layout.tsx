@@ -1,33 +1,35 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { AntDesign, Feather } from '@expo/vector-icons';
+import Colors from '@/constants/Colors';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarActiveTintColor: Colors.primary, 
+        headerShown: false, 
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="index" 
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Trang chủ',
+          tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="search" 
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Tìm kiếm',
+          tabBarIcon: ({ color }) => <Feather name="search" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile" 
+        options={{
+          title: 'Tài khoản',
+          tabBarIcon: ({ color }) => <AntDesign name="user" size={24} color={color} />,
         }}
       />
     </Tabs>

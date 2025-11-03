@@ -1,98 +1,82 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { Link } from 'expo-router';
+import CarCard from '../../components/CarCard'; 
+import { AntDesign } from '@expo/vector-icons';
+import { CarData } from '../../interfaces/CarData'; 
+import Colors from '../../constants/Colors'; 
 
-export default function HomeScreen() {
+// Dữ liệu giả định
+const carsData: CarData[] = [
+    { id: '1', name: 'Mẫu A - Civic RS', price: 900, power: '180 hp' }, 
+    { id: '2', name: 'Mẫu B - HRV', price: 1200, power: '150 hp' }
+];
+
+export default function TabHome() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        
+        {/* Header/Thanh tìm kiếm */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Xin chào, Đại lý!</Text>
+          <Link href="/search" style={styles.searchButton}>
+            <Text>Tìm kiếm xe, khách hàng... </Text>
+            <AntDesign  size={16} color="gray" />
+          </Link>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* Chức năng Nhanh */}
+        <View style={styles.quickActions}>
+          <Link href="/compare" asChild>
+            <TouchableOpacity style={styles.actionItem}>
+                <AntDesign name="swap" size={24} color="white" />
+                <Text style={styles.actionText}>So sánh xe</Text>
+            </TouchableOpacity>
+          </Link>
+          <TouchableOpacity style={styles.actionItem}>
+            <AntDesign name="form" size={24} color="white" />
+            <Text style={styles.actionText}>Tạo báo giá</Text>
+          </TouchableOpacity>
+          
+          {/* ✅ Thêm nút truy cập nhanh đến Feedback */}
+          <Link href="/feedback/index" asChild>
+             <TouchableOpacity style={[styles.actionItem, {backgroundColor: Colors.secondary, marginTop: 10}]}>
+                <AntDesign size={24} color="white" />
+                <Text style={styles.actionText}>Ghi nhận P/H</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
+
+        {/* Danh sách Xe Nổi bật */}
+        <Text style={styles.sectionTitle}>🔥 Xe Hot trong tháng</Text>
+        <FlatList
+          data={carsData}
+          keyExtractor={item => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => <CarCard car={item} style={styles.carCard} />}
+        />
+
+        {/* Các mục khác */}
+        <Text style={styles.sectionTitle}>💡 Tin tức & Khuyến mãi</Text>
+        <View style={{ height: 150, backgroundColor: '#f0f0f0', borderRadius: 8, marginHorizontal: 16 }}>
+            <Text style={{padding: 10}}>Banner Khuyến mãi lớn...</Text>
+        </View>
+        
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    container: { flex: 1, backgroundColor: 'white' },
+    scrollContent: { paddingBottom: 20 },
+    header: { padding: 16, paddingTop: 60, backgroundColor: '#f7f7f7' },
+    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
+    searchButton: { flexDirection: 'row', justifyContent: 'space-between', padding: 12, backgroundColor: '#fff', borderRadius: 8, borderWidth: 1, borderColor: '#eee' },
+    quickActions: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20, flexWrap: 'wrap', paddingHorizontal: 16 }, // Sửa wrap và padding
+    actionItem: { backgroundColor: Colors.primary, padding: 15, borderRadius: 10, alignItems: 'center', width: '47%' }, // Điều chỉnh width
+    actionText: { color: 'white', marginTop: 5, fontSize: 14 },
+    sectionTitle: { fontSize: 18, fontWeight: '600', margin: 16, marginBottom: 10 },
+    carCard: { marginRight: 10, width: 250 }
 });
