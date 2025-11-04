@@ -27,7 +27,6 @@ const CustomerCard: React.FC<CustomerCardProps> = ({ customer, onAppointmentPres
     };
 
     return (
-        // ⬅️ FIX: Ép kiểu Object Literal sang 'any' để vượt qua Type Checking của Expo Router
         <Link 
             href={linkProps as any} 
             asChild

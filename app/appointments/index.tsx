@@ -1,19 +1,17 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
-// Đã sửa đường dẫn import, giả sử AppointmentItem nằm trong components/
 import AppointmentItem from '../../components/AppointmentItem'; 
 
-// 1. ĐỊNH NGHĨA INTERFACE (Cần cho cả component này và AppointmentItem)
+
 interface AppointmentData {
     id: string;
     customerName: string;
     carModel: string;
     dateTime: string; 
-    status: 'Sắp tới' | 'Hoàn thành' | 'Hủy'; // Union Type
+    status: 'Sắp tới' | 'Hoàn thành' | 'Hủy'; 
 }
 
-// 2. GÁN KIỂU TƯỜNG MINH CHO DỮ LIỆU GIẢ ĐỊNH
 const MOCK_APPOINTMENTS: AppointmentData[] = [
     { id: 'a1', customerName: 'Nguyễn Văn Nam', carModel: 'VF 8', dateTime: '10:00 - 25/11/2025', status: 'Sắp tới' },
     { id: 'a2', customerName: 'Trần Thị Mai', carModel: 'Model Y', dateTime: '14:30 - 20/10/2025', status: 'Hoàn thành' },
@@ -23,14 +21,11 @@ const MOCK_APPOINTMENTS: AppointmentData[] = [
 export default function AppointmentListScreen() {
 
     const handleDetailPress = (appointmentId: string) => {
-        // Mở Modal hoặc màn hình chi tiết lịch hẹn
         console.log(`Xem chi tiết lịch hẹn: ${appointmentId}`);
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.headerTitle}>Quản lý Lịch hẹn Lái thử</Text>
-            
+        <View style={styles.container}>           
             {/* Bộ lọc Lịch hẹn */}
             <View style={styles.filterBar}>
                 <Text style={styles.filterText}>Lọc theo:</Text>
@@ -44,11 +39,9 @@ export default function AppointmentListScreen() {
             </View>
 
             <FlatList
-                // TypeScript đã nhận diện đúng kiểu dữ liệu
                 data={MOCK_APPOINTMENTS}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    // Truyền item (kiểu AppointmentData) vào props appointment
                     <AppointmentItem appointment={item} onDetailPress={handleDetailPress} />
                 )}
                 contentContainerStyle={styles.list}

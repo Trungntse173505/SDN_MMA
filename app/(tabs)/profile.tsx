@@ -20,7 +20,7 @@ export default function TabProfile() {
         {/* ✅ HỒ SƠ KHÁCH HÀNG */}
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => router.push('/customers/index')}
+          onPress={() => router.push('/customers')}
         >
           <Feather name="users" size={20} color="green" />
           <Text style={styles.menuText}>Hồ sơ Khách hàng</Text>
@@ -38,7 +38,7 @@ export default function TabProfile() {
         {/* ✅ PHẢN HỒI & KHIẾU NẠI */}
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => router.push('/feedback/index')}
+          onPress={() => router.push('/feedback')}
         >
           <AntDesign size={20} color="orange" />
           <Text style={styles.menuText}>Phản hồi & Khiếu nại</Text>

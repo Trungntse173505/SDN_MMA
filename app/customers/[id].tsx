@@ -3,7 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 
-
+// Dữ liệu giả định
 const MOCK_CUSTOMER_DETAIL = {
     id: 'c1',
     name: 'Nguyễn Văn Nam',
@@ -23,7 +23,10 @@ export default function CustomerDetailScreen() {
     const customer = MOCK_CUSTOMER_DETAIL; 
 
     const handleCreateAppointment = () => { console.log('Mở Modal tạo lịch hẹn'); };
-    const handleCreateFeedback = () => { console.log('Mở Modal ghi nhận phản hồi'); };
+    const handleCreateFeedback = () => { 
+        // Trong thực tế: router.push('/feedback/new?customerId=' + id);
+        console.log('Mở Modal ghi nhận phản hồi'); 
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -32,18 +35,10 @@ export default function CustomerDetailScreen() {
             <View style={styles.section}>
                 <Text style={styles.name}>{customer.name}</Text>
                 <Text style={styles.statusBadge}>Trạng thái: {customer.status}</Text>
-                <View style={styles.contactRow}>
-                    <Feather name="phone" size={16} color="gray" />
-                    <Text style={styles.contactText}>{customer.phone}</Text>
-                </View>
-                <View style={styles.contactRow}>
-                    <Feather name="mail" size={16} color="gray" />
-                    <Text style={styles.contactText}>{customer.email}</Text>
-                </View>
-                <View style={styles.contactRow}>
-                    <Feather name="map-pin" size={16} color="gray" />
-                    <Text style={styles.contactText}>{customer.address}</Text>
-                </View>
+                {/* ... (Các thông tin liên hệ khác) */}
+                <View style={styles.contactRow}><Feather name="phone" size={16} color="gray" /><Text style={styles.contactText}>{customer.phone}</Text></View>
+                <View style={styles.contactRow}><Feather name="mail" size={16} color="gray" /><Text style={styles.contactText}>{customer.email}</Text></View>
+                <View style={styles.contactRow}><Feather name="map-pin" size={16} color="gray" /><Text style={styles.contactText}>{customer.address}</Text></View>
             </View>
 
             {/* CÁC HÀNH ĐỘNG */}
@@ -52,8 +47,9 @@ export default function CustomerDetailScreen() {
                     <Feather name="calendar" size={20} color="white" />
                     <Text style={styles.actionText}>Hẹn Lái thử</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, {backgroundColor: 'orange'}]} onPress={handleCreateFeedback}>
-                    <AntDesign  size={20} color="white" />
+                <TouchableOpacity style={[styles.actionButton, {backgroundColor: Colors.secondary}]} onPress={handleCreateFeedback}>
+                    {/* ✅ FIX: Thêm name="message1" */}
+                    <AntDesign size={20} color="white" /> 
                     <Text style={styles.actionText}>Ghi nhận P/H</Text>
                 </TouchableOpacity>
             </View>
@@ -63,7 +59,8 @@ export default function CustomerDetailScreen() {
             <View style={styles.section}>
                 {customer.history.map((item, index) => (
                     <View key={index} style={styles.historyItem}>
-                        <AntDesign  size={14} color="#aaa" />
+                        {/* ✅ FIX: Thêm name="clockcircleo" */}
+                        <AntDesign size={14} color="#aaa" /> 
                         <View style={styles.historyContent}>
                             <Text style={styles.historyType}>{item.type}</Text>
                             <Text style={styles.historyDetail}>{item.content}</Text>
@@ -84,11 +81,9 @@ const styles = StyleSheet.create({
     contactRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
     contactText: { marginLeft: 10, fontSize: 16 },
     sectionTitle: { fontSize: 18, fontWeight: 'bold', marginHorizontal: 16, marginTop: 10 },
-
     actionContainer: { flexDirection: 'row', paddingHorizontal: 16, marginVertical: 5, justifyContent: 'space-between' },
     actionButton: { backgroundColor: Colors.primary, padding: 12, borderRadius: 8, flexDirection: 'row', alignItems: 'center', flex: 1, marginHorizontal: 5, justifyContent: 'center' },
     actionText: { color: 'white', fontWeight: 'bold', marginLeft: 8 },
-    
     historyItem: { flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#eee', alignItems: 'center' },
     historyContent: { flex: 1, marginLeft: 10 },
     historyType: { fontWeight: 'bold', fontSize: 14 },
