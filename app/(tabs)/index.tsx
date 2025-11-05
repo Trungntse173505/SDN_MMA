@@ -1,108 +1,153 @@
-// app/(tabs)/index.tsx - Đã sửa lỗi Icon
+import { useFetchProducts } from '@/hooks/useProducts';
+import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import {
+    ActivityIndicator,
+    Dimensions,
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import CarCard from '../../components/CarCard';
+import Colors from '../../constants/Colors';
+import { CarData } from '../../interfaces/CarData';
 
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-import { Link } from 'expo-router';
-import CarCard from '../../components/CarCard'; 
-import { AntDesign, Feather } from '@expo/vector-icons';
-import { CarData } from '../../interfaces/CarData'; 
-import Colors from '../../constants/Colors'; 
-
-// Dữ liệu giả định (Giữ nguyên)
-const carsData: CarData[] = [
-    { id: '1', name: 'Mẫu A - VF 8', price: 900, power: '180 hp', imageUrl: 'https://vinfast-cars.vn/wp-content/uploads/2025/02/vinfast-vf8-xam.png' }, 
-    { id: '2', name: 'Mẫu B - Model Y', price: 1200, power: '150 hp', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7qJFBjIrrQ7QsW5VFk3HYe4oF8-N1acCFjg&s' }
-];
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function TabHome() {
+  const { products, loading, error } = useFetchProducts({ limit: 20 }); // Lấy tất cả products
+  const [userName] = useState('Đại lý');
+  const router = useRouter();
+
+  const renderProductData = (item: any): CarData => ({
+    id: item.id,
+    name: `${item.name} (${item.version})`,
+    price: item.basePrice,
+    imageUrl: item.images[0],
+    maxPowerHP: item.maxPowerHP,
+    rangeKm: item.rangeKm,
+    totalStock: item.totalStock,
+  });
+
+  const handlePressCar = (id: string) => {
+    console.log('Pressed car id:', id); // debug
+    router.push(`/car/${id}`);
+  };
+
+  if (loading) {
     return (
-        <View style={styles.container}>
-            
-            {/* Vùng Header Tùy chỉnh (Top Bar) */}
-            <View style={styles.customHeader}>
-                <Text style={styles.title}>Xin chào, Đại lý!</Text>
-                <Feather name="bell" size={24} color={Colors.text} /> 
-            </View>
-
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                
-                {/* 1. Thanh Tìm kiếm và Danh mục */}
-                <Link href="/search" asChild>
-                    <TouchableOpacity style={styles.searchButton}>
-                        <AntDesign size={18} color="gray" /> 
-                        <Text style={styles.searchText}>Tìm kiếm xe, cấu hình, giá bán...</Text>
-                        <Feather name="chevron-right" size={18} color="gray" />
-                    </TouchableOpacity>
-                </Link>
-
-                {/* 2. DANH SÁCH XE NỔI BẬT (Ưu tiên số 1) */}
-                <Text style={styles.sectionTitle}>Các mẫu xe đang hot</Text>
-                <FlatList
-                    data={carsData}
-                    keyExtractor={item => item.id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={({ item }) => <CarCard car={item} style={styles.carCard} />}
-                    contentContainerStyle={{paddingLeft: 16}}
-                />
-                
-                {/* 3. Chức năng Nhanh (Gọn gàng hơn) */}
-                <Text style={styles.sectionTitle}>Công cụ</Text>
-                <View style={styles.quickActions}>
-                    
-                    {/* So sánh xe */}
-                    <Link href="/compare" asChild>
-                        <TouchableOpacity style={styles.actionItem}>
-                            <AntDesign name="swap" size={20} color={Colors.primary} />
-                            <Text style={styles.actionText}>So sánh</Text>
-                        </TouchableOpacity>
-                    </Link>
-                    
-                    {/* Tạo báo giá */}
-                    <TouchableOpacity style={styles.actionItem}>
-                        <AntDesign name="form" size={20} color={Colors.primary} />
-                        <Text style={styles.actionText}>Báo giá</Text>
-                    </TouchableOpacity>
-                    
-                    {/* Lịch hẹn */}
-                    <Link href="/appointments" asChild>
-                        <TouchableOpacity style={styles.actionItem}>
-                            <Feather name="calendar" size={20} color={Colors.primary} />
-                            <Text style={styles.actionText}>Lịch hẹn</Text>
-                        </TouchableOpacity>
-                    </Link>
-
-                     {/* Ghi nhận P/H */}
-                    <Link href="/feedback/index" asChild>
-                        <TouchableOpacity style={styles.actionItem}>
-                            <AntDesign  size={20} color={Colors.primary} /> 
-                            <Text style={styles.actionText}>P/H & K/N</Text>
-                        </TouchableOpacity>
-                    </Link>
-                </View>
-
-                {/* 4. Tin tức/Khuyến mãi */}
-                <Text style={styles.sectionTitle}>💡 Tin tức & Khuyến mãi</Text>
-                <View style={styles.promoBanner}>
-                    <Text style={styles.promoText}>Cập nhật giá bán, cấu hình mới nhất!</Text>
-                </View>
-                
-            </ScrollView>
-        </View>
+      <View style={styles.fullCenter}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
     );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.fullCenter}>
+        <Text style={styles.errorText}>Lỗi tải xe: {error}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.customHeader}>
+        <View>
+          <Text style={styles.greetingText}>Xin chào,</Text>
+          <Text style={styles.title}>{userName}</Text>
+        </View>
+        <TouchableOpacity style={styles.bellButton}>
+          <Feather name="bell" size={22} color={Colors.text} />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Thanh tìm kiếm */}
+        <TouchableOpacity
+          style={styles.searchButton}
+          onPress={() => router.push('/search')}
+        >
+          <Feather name="search" size={18} color="#888" style={{ marginRight: 8 }} />
+          <Text style={styles.searchText}>Tìm kiếm xe, cấu hình, giá bán...</Text>
+          <Feather name="chevron-right" size={18} color="#bbb" />
+        </TouchableOpacity>
+
+        {/* Danh sách xe */}
+        <Text style={styles.sectionTitle}>Danh sách xe</Text>
+
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          snapToInterval={SCREEN_WIDTH}
+          decelerationRate="fast"
+          renderItem={({ item }) => (
+            <View style={{ width: SCREEN_WIDTH, paddingHorizontal: 16 }}>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => handlePressCar(item.id)}
+              >
+                <CarCard
+                  car={renderProductData(item)}
+                  style={{ width: '100%', alignSelf: 'center' }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Colors.background },
-    scrollContent: { paddingBottom: 20 },
-    customHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingTop: 60, backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-    title: { fontSize: 24, fontWeight: 'bold', color: Colors.text },
-    searchButton: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, backgroundColor: 'white', borderRadius: 10, marginHorizontal: 16, marginTop: 15, elevation: 3, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } },
-    searchText: { marginLeft: 10, fontSize: 16, color: '#555', flex: 1 },
-    sectionTitle: { fontSize: 18, fontWeight: 'bold', margin: 16, marginBottom: 10, color: Colors.text },
-    quickActions: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 16 },
-    actionItem: { padding: 10, borderRadius: 10, alignItems: 'center', justifyContent: 'center', width: '23%', backgroundColor: 'white', borderWidth: 1, borderColor: '#eee' }, 
-    actionText: { color: Colors.text, marginTop: 5, fontSize: 11, fontWeight: '600', textAlign: 'center' },
-    promoBanner: { height: 80, backgroundColor: Colors.primary, borderRadius: 12, marginHorizontal: 16, justifyContent: 'center', alignItems: 'center', marginTop: 10 },
-    promoText: { fontSize: 16, fontWeight: 'bold', color: 'white' },
-    carCard: { marginRight: 15, width: 280 }
+  container: { flex: 1, backgroundColor: '#d2d4e0ff' },
+  fullCenter: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' },
+  scrollContent: { paddingBottom: 30 },
+  customHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 55,
+    paddingBottom: 15,
+    backgroundColor: '#ffffffff',
+    borderBottomWidth: 0.4,
+    borderBottomColor: '#E6E6E6',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  greetingText: { fontSize: 15, color: '#888' },
+  title: { fontSize: 22, fontWeight: '700', color: Colors.text },
+  bellButton: { backgroundColor: '#F4F4F6', borderRadius: 10, padding: 8 },
+  searchButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginHorizontal: 20,
+    marginTop: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  searchText: { flex: 1, fontSize: 15, color: '#555' },
+  sectionTitle: { fontSize: 18, fontWeight: '700', marginHorizontal: 20, marginTop: 26, marginBottom: 10, color: Colors.text },
+  errorText: { color: 'red', textAlign: 'center', margin: 20 },
 });

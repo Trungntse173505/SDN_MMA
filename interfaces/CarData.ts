@@ -1,18 +1,33 @@
-// interfaces/CarData.ts (Tạo file mới)
+// interfaces/CarData.ts
+interface ProductVariant {
+    status: boolean;
+    attributeValue: { attrId: string; attrType: string; label: string; value: string }[];
+    priceNew: number;
+    dealerStock: number;
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    version: string;
+    basePrice: number;
+    images: string[];
+    rangeKm: number;
+    batteryKWh: number;
+    maxPowerHP: number;
+    categories: string[];
+    categoryIds: string[];
+    variants: ProductVariant[];
+    totalStock: number;
+    status: string;
+}
 
 export interface CarData {
     id: string;
     name: string;
-    price: number; // Triệu VNĐ
+    price: number;
     imageUrl?: string;
-    status?: 'Còn hàng' | 'Hết hàng';
-    
-    // Index signature cho phép truy cập thuộc tính bằng key động (cần cho ComparisonTable)
-    [key: string]: string | number | boolean | undefined; 
-
-    // Các thông số chi tiết (cho trang Detail và Compare)
-    power?: string;
-    battery?: string;
-    range?: string;
-    seatingCapacity?: number;
+    maxPowerHP?: number; 
+    rangeKm?: number;
+    totalStock?: number; 
 }
