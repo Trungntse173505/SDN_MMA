@@ -9,6 +9,8 @@ interface Product {
   basePrice: number;
   images: string[];
   totalStock: number;
+  maxPowerHP?: number;  
+  rangeKm?: number;    
   // ...
 }
 

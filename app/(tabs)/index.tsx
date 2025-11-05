@@ -75,7 +75,7 @@ export default function TabHome() {
           onPress={() => router.push('/search')}
         >
           <Feather name="search" size={18} color="#888" style={{ marginRight: 8 }} />
-          <Text style={styles.searchText}>Tìm kiếm xe, cấu hình, giá bán...</Text>
+          <Text style={styles.searchText}>Tìm kiếm xe,giá bán...</Text>
           <Feather name="chevron-right" size={18} color="#bbb" />
         </TouchableOpacity>
 
