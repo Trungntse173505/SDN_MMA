@@ -4,7 +4,6 @@ import { Product } from '@/interfaces/CarData';
 
 // Định nghĩa Interface sản phẩm dựa trên phản hồi API (Rút gọn)
 
-
 interface ProductFetchParams {
   keyword?: string;
   categoryId?: string;

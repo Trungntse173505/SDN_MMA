@@ -15,6 +15,7 @@ interface ProductDetail {
   content?: string;
   variants: any[];
   categories: { id: string; name: string }[];
+  status: string;
 }
 
 interface HookResult {
