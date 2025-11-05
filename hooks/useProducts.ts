@@ -1,16 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSecureGet } from './utils/apiClient';
+import { Product } from '@/interfaces/CarData';
 
 // Định nghĩa Interface sản phẩm dựa trên phản hồi API (Rút gọn)
-interface Product {
-  id: string;
-  name: string;
-  version: string;
-  basePrice: number;
-  images: string[];
-  totalStock: number;
-  // ...
-}
+
 
 interface ProductFetchParams {
   keyword?: string;

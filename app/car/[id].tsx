@@ -1,6 +1,6 @@
 import { useFetchProductDetail } from '@/hooks/useProductDetail'; // hook thật
 import { AntDesign, Feather } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../../constants/Colors';
@@ -23,12 +23,18 @@ export default function CarDetailScreen() {
     );
   }
 
+
   if (error || !product) {
     return (
       <View style={styles.center}>
         <Text style={{ color: 'red' }}>Không tìm thấy xe hoặc lỗi tải dữ liệu.</Text>
       </View>
     );
+  }
+
+
+  const handleCompare = () => {
+    router.push("/compare")
   }
 
   return (
@@ -48,7 +54,7 @@ export default function CarDetailScreen() {
           <Feather name="refresh-ccw" size={20} color={Colors.primary} />
           <Text style={[styles.actionText, { color: Colors.primary }]}>Lái thử</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.compareIcon}>
+        <TouchableOpacity style={styles.compareIcon} onPress={() => handleCompare()}>
           <Feather name="bar-chart-2" size={20} color={Colors.primary} />
           <Text style={{ fontSize: 12, color: Colors.primary }}>So sánh</Text>
         </TouchableOpacity>
@@ -73,10 +79,10 @@ const styles = StyleSheet.create({
   carName: { fontSize: 24, fontWeight: 'bold' },
   carPrice: { fontSize: 20, color: '#E91E63', fontWeight: '600', marginTop: 4 },
 
-  actionContainer: { flexDirection: 'row', paddingHorizontal: 16, marginVertical: 15, justifyContent: 'space-between', alignItems: 'center' },
-  actionButton: { backgroundColor: Colors.primary, padding: 12, borderRadius: 8, flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 10, justifyContent: 'center' },
-  actionButtonSecondary: { borderWidth: 1, borderColor: Colors.primary, padding: 12, borderRadius: 8, flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' },
-  compareIcon: { padding: 10, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#eee', borderRadius: 8 },
+  actionContainer: { flexDirection: 'row', paddingHorizontal: 16, marginVertical: 15, justifyContent: 'space-around', alignItems: 'center' },
+  actionButton: { backgroundColor: Colors.primary, padding: 10, borderRadius: 8, flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 5, justifyContent: 'center' },
+  actionButtonSecondary: { borderWidth: 1, borderColor: Colors.primary, padding: 10, borderRadius: 8, flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' },
+  compareIcon: { paddingHorizontal: 6, paddingVertical: 2,alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#eee',flex: 0.5, borderRadius: 8, marginLeft: 5 },
   actionText: { color: 'white', fontWeight: 'bold', marginLeft: 5 },
 
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginHorizontal: 16, marginTop: 10, marginBottom: 8 },

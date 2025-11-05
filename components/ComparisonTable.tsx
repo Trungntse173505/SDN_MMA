@@ -1,17 +1,20 @@
+import { Product } from '@/interfaces/CarData'; // Import Interface
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { CarData } from '../interfaces/CarData'; // Import Interface
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 interface ComparisonTableProps {
-    cars: CarData[];
+    cars: Product[];
 }
-
-const SPEC_ROWS = [
-    { key: 'price', label: 'Giá bán (Triệu VNĐ)', isMonetary: true },
-    { key: 'power', label: 'Công suất tối đa', isMonetary: false },
-    { key: 'battery', label: 'Dung lượng Pin', isMonetary: false },
-    { key: 'range', label: 'Phạm vi di chuyển', isMonetary: false },
-    { key: 'seatingCapacity', label: 'Số chỗ ngồi', isMonetary: false },
+interface Spec {
+  key: keyof Product; // ✅ chỉ cho phép các key hợp lệ của Product
+  label: string;
+}
+const SPEC_ROWS: Spec[] = [
+  { key: 'basePrice', label: 'Giá (VNĐ)' },
+  { key: 'maxPowerHP', label: 'Công suất (HP)' },
+  { key: 'rangeKm', label: 'Quãng đường (Km)' },
+  { key: 'batteryKWh', label: 'Dung lượng Pin (kWh)' },
+  { key: 'totalStock', label: 'Tồn kho' },
 ];
 
 const ComparisonTable: React.FC<ComparisonTableProps> = ({ cars }) => {
@@ -37,12 +40,11 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ cars }) => {
                         <Text style={[styles.cell, styles.specLabel, styles.fixedColumn]}>{spec.label}</Text>
 
                         {cars.map(car => {
-                            // Truy cập thuộc tính an toàn bằng index signature
                             const carValue = car[spec.key];
                             let displayValue = String(carValue || 'N/A');
 
-                            if (spec.isMonetary && typeof carValue === 'number') {
-                                displayValue = `${carValue.toLocaleString()} M`;
+                            if (spec.label && typeof carValue === 'number') {
+                                displayValue = `${carValue.toLocaleString()}`;
                             }
 
                             return (
