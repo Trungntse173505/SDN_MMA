@@ -3,14 +3,13 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Dimensions,
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import CarCard from '../../components/CarCard';
 import Colors from '../../constants/Colors';
@@ -66,11 +65,11 @@ export default function TabHome() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
+      {/* <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-      >
-        {/* Thanh tìm kiếm */}
+      > */}
+
         <TouchableOpacity
           style={styles.searchButton}
           onPress={() => router.push('/search')}
@@ -86,13 +85,9 @@ export default function TabHome() {
         <FlatList
           data={products}
           keyExtractor={(item) => item.id}
-          horizontal
           showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          snapToInterval={SCREEN_WIDTH}
-          decelerationRate="fast"
           renderItem={({ item }) => (
-            <View style={{ width: SCREEN_WIDTH, paddingHorizontal: 16 }}>
+            <View style={{ width: SCREEN_WIDTH, paddingHorizontal: 16, marginBottom: 20}}>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => handlePressCar(item.id)}
@@ -105,7 +100,7 @@ export default function TabHome() {
             </View>
           )}
         />
-      </ScrollView>
+      {/* </ScrollView> */}
     </View>
   );
 }

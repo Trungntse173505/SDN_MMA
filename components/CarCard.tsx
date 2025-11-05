@@ -1,7 +1,6 @@
 import { Feather } from '@expo/vector-icons';
-import { Link } from 'expo-router';
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import Colors from '../constants/Colors';
 import { CarData } from '../interfaces/CarData';
 
@@ -23,11 +22,9 @@ const CarCard: React.FC<CarCardProps> = ({ car, style, showCompareButton = false
   const priceInVND = formatPrice(car.price);
 
   return (
-    <Link href={detailPath as any} asChild>
-      {/* View BỌC NGOÀI: Áp dụng Shadow và Elevation */}
       <View style={[styles.shadowWrapper, style]}> 
         {/* TouchableOpacity BÊN TRONG: Áp dụng BorderRadius và Overflow: 'hidden' */}
-        <TouchableOpacity style={styles.card}>
+        <View style={styles.card}>
           {/* Ảnh */}
           <View style={styles.imageContainer}>
             <Image
@@ -69,9 +66,8 @@ const CarCard: React.FC<CarCardProps> = ({ car, style, showCompareButton = false
             <Text style={styles.priceValue}>{priceInVND}</Text>
             <Text style={styles.priceUnit}>VNĐ</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
-    </Link>
   );
 };
 
