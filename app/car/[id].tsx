@@ -34,7 +34,15 @@ export default function CarDetailScreen() {
   const activeVariants = product.variants.filter(v => v.status);
 
   const handleCopare = ()  => {
-    router.push("/compare");
+    // router.push("/compare");
+     if (product) {
+    router.push({
+      pathname: '/compare',
+      params: {
+        id: product.id, // id của xe hiện tại
+      },
+    });
+  }
   }
 
   return (
@@ -72,7 +80,7 @@ export default function CarDetailScreen() {
           <Feather name="refresh-ccw" size={20} color={Colors.primary} />
           <Text style={[styles.actionText, { color: Colors.primary }]}>Lái thử</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.compareIcon} onPress={() => {handleCopare()}}>
+        <TouchableOpacity style={styles.compareIcon} onPress={handleCopare}>
           <Feather name="bar-chart-2" size={20} color={Colors.primary} />
           <Text style={{ fontSize: 12, color: Colors.primary }}>So sánh</Text>
         </TouchableOpacity>

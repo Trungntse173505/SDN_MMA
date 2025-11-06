@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState } from 'react';
-import { API_BASE_URL, AUTH_TOKEN_KEY } from '../constants/ApiConfig';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
+import { API_BASE_URL, AUTH_TOKEN_KEY } from "../constants/ApiConfig";
 
 // Định nghĩa kiểu dữ liệu cho response thành công
 interface LoginResponseData {
@@ -14,7 +14,10 @@ interface LoginResponseData {
 
 // Định nghĩa kiểu cho kết quả trả về của hook
 interface AuthHookResult {
-  login: (email: string, password: string) => Promise<{ success: boolean, data?: LoginResponseData, message: string }>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; data?: LoginResponseData; message: string }>;
   loading: boolean;
 }
 
@@ -23,13 +26,13 @@ export const useAuth = (): AuthHookResult => {
 
   const login = async (email: string, password: string) => {
     setLoading(true);
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/account/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'accept': 'application/json',
+          "Content-Type": "application/json",
+          accept: "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -39,11 +42,19 @@ export const useAuth = (): AuthHookResult => {
       if (json.success && json.data?.token) {
         // Lưu Token vào AsyncStorage
         await AsyncStorage.setItem(AUTH_TOKEN_KEY, json.data.token);
-        
-        return { success: true, data: json.data as LoginResponseData, message: json.message };
+        await AsyncStorage.setItem("user", json.data.fullName);
+
+        return {
+          success: true,
+          data: json.data as LoginResponseData,
+          message: json.message,
+        };
       } else {
         // Trả về message lỗi từ server
-        return { success: false, message: json.message || "Tên đăng nhập hoặc mật khẩu không đúng." };
+        return {
+          success: false,
+          message: json.message || "Tên đăng nhập hoặc mật khẩu không đúng.",
+        };
       }
     } catch (error) {
       console.error("Lỗi kết nối API:", error);

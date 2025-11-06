@@ -1,17 +1,44 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { AUTH_TOKEN_KEY, USER_INFO_KEY } from '@/constants/ApiConfig';
 import { AntDesign, Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import Colors from '../../constants/Colors';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function TabProfile() {
-  const router = useRouter();
+const router = useRouter();
+
+const handleLogout = async () => {
+    Alert.alert(
+      "Xác nhận đăng xuất",
+      "Bạn có chắc muốn đăng xuất khỏi tài khoản?",
+      [
+        { text: "Hủy", style: "cancel" },
+        {
+          text: "Đăng xuất",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await AsyncStorage.multiRemove(['accessToken', 'userInfo', AUTH_TOKEN_KEY, USER_INFO_KEY]);
+              Alert.alert("Đã đăng xuất", "Hẹn gặp lại bạn sau!");
+              router.replace('/login');
+            } catch (error) {
+              console.error("Lỗi khi đăng xuất:", error);
+              Alert.alert("Đăng xuất thất bại", "Vui lòng thử lại.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.profileHeader}>
           <AntDesign name="user" size={60} color="#333" />
-          <Text style={styles.name}>Nguyễn Văn A</Text>
+          <Text style={styles.name}></Text>
           <Text style={styles.role}>Dealer Staff - Chi nhánh Quận 1</Text>
         </View>
 
@@ -33,6 +60,13 @@ export default function TabProfile() {
         >
           <Feather name="calendar" size={20} color="blue" />
           <Text style={styles.menuText}>Quản lý Lịch hẹn Lái thử</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push("/allocations" as any)}
+        >
+          <Feather name="calendar" size={20} color="blue" />
+          <Text style={styles.menuText}>Quản lý phân bổ xe</Text>
         </TouchableOpacity>
 
         {/* ✅ PHẢN HỒI & KHIẾU NẠI */}
@@ -61,9 +95,9 @@ export default function TabProfile() {
           <Text style={styles.menuText}>Cài đặt Ứng dụng</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+       <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
           <AntDesign name="logout" size={20} color="red" />
-          <Text style={styles.menuText}>Đăng xuất</Text>
+          <Text style={[styles.menuText, { color: "red" }]}>Đăng xuất</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

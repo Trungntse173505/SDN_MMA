@@ -1,40 +1,57 @@
 import { useFetchProducts } from '@/hooks/useProducts';
 import { Feather } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ComparisonTable from '../../components/ComparisonTable';
 import Colors from '../../constants/Colors';
-import {  Product } from '@/interfaces/CarData';
+import { Product } from '@/interfaces/CarData';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function CarComparisonScreen() {
   const { products: allCars = [], loading } = useFetchProducts({ limit: 30 });
-  const [carsToCompare, setCarsToCompare] = useState<Product[]>([]);
+  const [carsToCompare, setCarsToCompare] = useState<(Product & { selectedVariant?: any })[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // ✅ Xóa xe
+  const { id, color } = useLocalSearchParams<{ id?: string; color?: string }>();
+
+  // ✅ Tự động thêm xe đầu tiên khi điều hướng từ trang chi tiết
+  useEffect(() => {
+    if (id && allCars.length > 0) {
+      const car = allCars.find(c => c.id === id);
+      if (car && !carsToCompare.some(c => c.id === car.id)) {
+        if (color) {
+          const variant = car.variants.find(v => v.attributeValue[0].value === color);
+          const selectedCar = { ...car, selectedVariant: variant };
+          setCarsToCompare([selectedCar]);
+        } else {
+          setCarsToCompare([car]);
+        }
+      }
+    }
+  }, [id, color, allCars]);
+
+  // ✅ Xóa xe khỏi danh sách so sánh
   const handleRemoveCar = (id: string) => {
-    setCarsToCompare((prev) => prev.filter((car) => car.id !== id));
+    setCarsToCompare(prev => prev.filter(car => car.id !== id));
   };
 
   // ✅ Thêm xe vào danh sách
   const handleSelectCar = (car: Product) => {
-    setCarsToCompare((prev) => [...prev, car]);
+    setCarsToCompare(prev => [...prev, car]);
     setIsModalVisible(false);
   };
 
-  const availableCars = allCars.filter(
-    (c) => !carsToCompare.some((sel) => sel.id === c.id)
-  );
+  const availableCars = allCars.filter(c => !carsToCompare.some(sel => sel.id === c.id));
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerTitle}>So sánh xe</Text>
+
+      {/* Danh sách xe đã chọn */}
       <View style={styles.selectionBar}>
-        {carsToCompare.map((car) => (
+        {carsToCompare.map(car => (
           <View key={car.id} style={styles.selectedCar}>
-            <Text numberOfLines={1} style={styles.selectedCarText}>
-              {car.name}
-            </Text>
+            <Text numberOfLines={1} style={styles.selectedCarText}>{car.name}</Text>
             <TouchableOpacity onPress={() => handleRemoveCar(car.id)}>
               <Feather name="x-circle" size={16} color="#555" />
             </TouchableOpacity>
@@ -43,10 +60,7 @@ export default function CarComparisonScreen() {
 
         {/* Nút thêm xe */}
         {carsToCompare.length < 3 && (
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => setIsModalVisible(true)}
-          >
+          <TouchableOpacity style={styles.addButton} onPress={() => setIsModalVisible(true)}>
             <Feather name="plus" size={20} color={Colors.primary} />
             <Text style={styles.addButtonText}>Thêm xe</Text>
           </TouchableOpacity>
@@ -70,10 +84,7 @@ export default function CarComparisonScreen() {
               data={availableCars}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.modalItem}
-                  onPress={() => handleSelectCar(item)}
-                >
+                <TouchableOpacity style={styles.modalItem} onPress={() => handleSelectCar(item)}>
                   <Text style={styles.modalItemText}>{item.name}</Text>
                   <Feather name="plus-circle" size={18} color={Colors.primary} />
                 </TouchableOpacity>
@@ -86,10 +97,7 @@ export default function CarComparisonScreen() {
             />
           )}
 
-          <TouchableOpacity
-            onPress={() => setIsModalVisible(false)}
-            style={styles.closeButton}
-          >
+          <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
             <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>Đóng</Text>
           </TouchableOpacity>
         </View>
@@ -110,7 +118,6 @@ const styles = StyleSheet.create({
   },
   selectionBar: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     flexWrap: 'wrap',
     gap: 10,
     paddingHorizontal: 16,

@@ -34,7 +34,7 @@ export const useFetchProductDetail = (): HookResult => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetchSecureGet(`/product/${id}`);
+      const res = await fetchSecureGet(`/products/${id}`);
       setProduct(res.product);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lỗi tải chi tiết sản phẩm.');

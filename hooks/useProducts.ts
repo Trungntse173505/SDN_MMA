@@ -34,7 +34,7 @@ export const useFetchProducts = (initialParams: ProductFetchParams = {}): Produc
       const allParams = { ...initialParams, ...params, page: params.page || 1, limit: params.limit || 20 };
       
       // ✅ GỌI API BẢO MẬT: Dùng fetchSecureGet và endpoint '/product'
-      const result = await fetchSecureGet('/product', allParams);
+      const result = await fetchSecureGet('/products', allParams);
       
       setProducts(result.products);
       setPagination(result.pagination);

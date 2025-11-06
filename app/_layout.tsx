@@ -32,6 +32,7 @@ export default function RootLayout() {
         <Stack.Screen name="appointments/index" options={{ title: 'Quản lý Lịch hẹn' }} />
         <Stack.Screen name="feedback/index" options={{ title: 'Phản hồi & Khiếu nại' }} />
         <Stack.Screen name="feedback/[id]" options={{ title: 'Xử lý Khiếu nại' }} />
+        <Stack.Screen name="allocations/index" options={{ title: 'Xe được phân bổ' }} />
 
         {/* 5. Màn hình Modal Chung */}
         <Stack.Screen 
